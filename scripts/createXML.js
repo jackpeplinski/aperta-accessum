@@ -1,0 +1,166 @@
+var axios = require("axios");
+const XMLWriter = require("xml-writer");
+require("dotenv").config();
+var fs = require("fs");
+const env = require("../config.env");
+
+function getFileNames() {
+  var data = JSON.stringify({
+    path: "",
+    recursive: false,
+    include_media_info: false,
+    include_deleted: false,
+    include_has_explicit_shared_members: false,
+    include_mounted_folders: false,
+    include_non_downloadable_files: true,
+  });
+
+  var config = {
+    method: "post",
+    url: "https://api.dropboxapi.com/2/files/list_folder",
+    headers: {
+      Authorization: `Bearer ${env.DROPBOX}`,
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  console.log(`🔎 Getting file names from Dropbox...`);
+  axios(config)
+    .then(function (response) {
+      // console.log(JSON.stringify(response.data));
+      if (response.data.entries) {
+        var entries = response.data.entries;
+        var names = [];
+
+        for (var i = 0; i < entries.length; i++) {
+          var name = entries[i].name;
+          console.log(name);
+          names.push(name);
+        }
+
+        createXML(names);
+      } else {
+        console.log(response.data.entries);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function changeNameToDOI(name) {
+  var categoryLength = "-category:".length;
+  var categoryMatch = name.match(/-category:/);
+  var categoryIndex = categoryMatch.index;
+  var category = name.substring(
+    categoryIndex + categoryLength,
+    name.length - 4
+  );
+  var DOI = name.replace(/:/g, "/").substring(0, categoryIndex);
+
+  return { category, DOI };
+}
+
+async function createXML(names) {
+  // https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
+
+  xw = new XMLWriter();
+
+  xw.startDocument("1.0", "UTF-8");
+  xw.startElement("documents");
+
+  for (let i = 0; i < names.length; i++) {
+    // I think `i` NEEDS to defined with `let` because the function is async
+    var fullTextURL = await getFullTextURL(names[i]);
+
+    var { category, DOI } = changeNameToDOI(names[i]);
+    var metadata = await getMetadata(DOI);
+
+    xw.startElement("document");
+
+    xw.writeElement("title", metadata.title[0]);
+    
+    const dateParts = metadata.created["date-parts"][0];
+    for (var j = 1; j < dateParts.length; j++) {
+      if (dateParts[j].toString().length == 1) {
+        dateParts[j] = "0" + dateParts[j];
+      }
+    }
+
+    xw.writeElement(
+      "publication-date",
+      dateParts[0] + "-" + dateParts[1] + "-" + dateParts[2]
+    );
+
+    xw.writeElement("fulltext-url", fullTextURL);
+
+    xw.writeElement("embargo", "FALSE");
+
+    const authorsArr = metadata.author;
+    for (var j = 0; j < authorsArr.length; j++) {
+      xw.startElement("author");
+      xw.writeElement("lname", authorsArr[j].family);
+      xw.writeElement("fname", authorsArr[j].given);
+      xw.endElement();
+    }
+    xw.endElement();
+  }
+
+  xw.endElement();
+  xw.endDocument();
+
+  fs.writeFileSync("upload.xml", xw.output, function (err) {
+    if (err) throw err;
+    console.log("Saved!");
+  });
+}
+
+function getMetadata(DOI) {
+  var config = {
+    method: "get",
+    url: `https://api.crossref.org/works/${DOI}`,
+    headers: {},
+  };
+
+  return new Promise(function (resolve, reject) {
+    axios(config)
+      .then(function (response) {
+        resolve(response.data.message);
+      })
+      .catch(function (error) {
+        console.log(error);
+        resolve(error);
+      });
+  });
+}
+
+function getFullTextURL(name) {
+  var data = JSON.stringify({
+    path: `/${name}`,
+  });
+
+  var config = {
+    method: "post",
+    url: "https://api.dropboxapi.com/2/files/get_temporary_link",
+    headers: {
+      Authorization: `Bearer ${env.BEPRESS}`,
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  return new Promise(function (resolve, reject) {
+    axios(config)
+      .then(function (response) {
+        console.log(response.data.link)
+        resolve(response.data.link);
+      })
+      .catch(function (error) {
+        console.log(error);
+        resolve(error);
+      });
+  });
+}
+
+getFileNames();

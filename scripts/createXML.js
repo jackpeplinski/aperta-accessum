@@ -1,6 +1,5 @@
 var axios = require("axios");
 const XMLWriter = require("xml-writer");
-require("dotenv").config();
 var fs = require("fs");
 const env = require("../config.env");
 
@@ -28,7 +27,6 @@ function getFileNames() {
   console.log(`🔎 Getting file names from Dropbox...`);
   axios(config)
     .then(function (response) {
-      // console.log(JSON.stringify(response.data));
       if (response.data.entries) {
         var entries = response.data.entries;
         var names = [];
@@ -50,16 +48,9 @@ function getFileNames() {
 }
 
 function changeNameToDOI(name) {
-  var categoryLength = "-category:".length;
-  var categoryMatch = name.match(/-category:/);
-  var categoryIndex = categoryMatch.index;
-  var category = name.substring(
-    categoryIndex + categoryLength,
-    name.length - 4
-  );
-  var DOI = name.replace(/:/g, "/").substring(0, categoryIndex);
+  var DOI = name.replace(/:/g, "/").slice(0,-4);
 
-  return { category, DOI };
+  return DOI;
 }
 
 async function createXML(names) {
@@ -74,7 +65,7 @@ async function createXML(names) {
     // I think `i` NEEDS to defined with `let` because the function is async
     var fullTextURL = await getFullTextURL(names[i]);
 
-    var { category, DOI } = changeNameToDOI(names[i]);
+    var DOI = changeNameToDOI(names[i]);
     var metadata = await getMetadata(DOI);
 
     xw.startElement("document");
@@ -110,7 +101,7 @@ async function createXML(names) {
   xw.endElement();
   xw.endDocument();
 
-  fs.writeFileSync("upload.xml", xw.output, function (err) {
+  fs.writeFileSync("../output/upload.xml", xw.output, function (err) {
     if (err) throw err;
     console.log("Saved!");
   });
@@ -144,7 +135,7 @@ function getFullTextURL(name) {
     method: "post",
     url: "https://api.dropboxapi.com/2/files/get_temporary_link",
     headers: {
-      Authorization: `Bearer ${env.BEPRESS}`,
+      Authorization: `Bearer ${env.DROPBOX}`,
       "Content-Type": "application/json",
     },
     data: data,
@@ -153,7 +144,6 @@ function getFullTextURL(name) {
   return new Promise(function (resolve, reject) {
     axios(config)
       .then(function (response) {
-        console.log(response.data.link)
         resolve(response.data.link);
       })
       .catch(function (error) {

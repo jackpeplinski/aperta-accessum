@@ -16,7 +16,6 @@ const Dropzone = (props) => {
 
   /**
    * @todo add is drag active
-   * Check for keys EVERYWHERE
    */
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: "application/pdf",

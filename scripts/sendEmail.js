@@ -62,11 +62,12 @@ async function start(scrapeURL, institution, uploadBaseURL) {
   }
 }
 
-// forDOI("10.1109/MS.2014.30");
 const emails = [];
 async function forDOI(DOI) {
-  // @todo could see if using Promise.all() would speed this up
+  // @todo could see if there's a way to cancel other API calls when one returns false 
   console.log(`🔎 Checking status of ${DOI} ...`);
+
+  // FYI, using Promise.all versus checking for each status did not make a material difference
   const statuses = await Promise.all([
     getPermissionsStatus(DOI),
     getOpenAccessStatus(DOI),
@@ -359,7 +360,7 @@ function writeEmailCSV(emails) {
     );
   }
 
-  fs.writeFile("toSend.csv", csv.join("\r\n"), (err) => {
+  fs.writeFile("../output/toSend.csv", csv.join("\r\n"), (err) => {
     console.log(err || "📮 Email list CSV ready!");
   });
 }
@@ -383,5 +384,5 @@ function writeOAJSON(alreadyOpenAccess) {
 const institution = ""; // using AND or OR complicates this so need to add directly
 const scrapeURL = "https://www.eng.uwo.ca/electrical/people/faculty/index.html";
 const uploadBaseURL = "https://aperta-accessum.netlify.app/";
-// start(scrapeURL, institution, uploadBaseURL);
+start(scrapeURL, institution, uploadBaseURL);
 

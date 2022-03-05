@@ -26,7 +26,15 @@ async function start(scrapeURL, institution, uploadBaseURL) {
         console.log(
           `🔎 Searching ORCID for ID of: ${person?.lName.toUpperCase()}, ${person?.fName.toUpperCase()}...`
         );
-        const ORCIDIDs = await getORCIDID(person.fName, person.lName, institution);
+        const ORCIDIDs = await getORCIDID(
+          person.fName,
+          person.lName,
+          institution
+        );
+
+        // Can add ORCIDIDs below
+        // ORCIDIDs.push("ENTER NUMBER")
+        
         ORCIDIDsCount += ORCIDIDs?.length;
         if (ORCIDIDs && ORCIDIDs?.length != 0) {
           for (ORCIDID of ORCIDIDs) {
@@ -48,7 +56,7 @@ async function start(scrapeURL, institution, uploadBaseURL) {
       }
       writeOAJSON(alreadyOpenAccess);
       writeEmailCSV(emails);
-      console.log("📈 Run Log")
+      console.log("📈 Run Log");
       console.log(`${people.length} people`);
       console.log(`${ORCIDIDsCount} ORCIDIDs`);
       console.log(`${DOIsCount} DOIs`);
@@ -64,7 +72,7 @@ async function start(scrapeURL, institution, uploadBaseURL) {
 
 const emails = [];
 async function forDOI(DOI) {
-  // @todo could see if there's a way to cancel other API calls when one returns false 
+  // @todo could see if there's a way to cancel other API calls when one returns false
   console.log(`🔎 Checking status of ${DOI} ...`);
 
   // FYI, using Promise.all versus checking for each status did not make a material difference
@@ -385,4 +393,3 @@ const institution = ""; // using AND or OR complicates this so need to add direc
 const scrapeURL = "https://www.eng.uwo.ca/electrical/people/faculty/index.html";
 const uploadBaseURL = "https://aperta-accessum.netlify.app/";
 start(scrapeURL, institution, uploadBaseURL);
-

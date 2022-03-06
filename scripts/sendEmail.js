@@ -34,7 +34,7 @@ async function start(scrapeURL, institution, uploadBaseURL) {
 
         // Can add ORCIDIDs below
         // ORCIDIDs.push("ENTER NUMBER")
-        
+
         ORCIDIDsCount += ORCIDIDs?.length;
         if (ORCIDIDs && ORCIDIDs?.length != 0) {
           for (ORCIDID of ORCIDIDs) {
@@ -253,19 +253,18 @@ function getDuplicateTitleStatus(title) {
   });
 }
 
+// getPermissionsStatus("10.1109/MITP.2020.3031862")
 function getPermissionsStatus(DOI) {
   var config = {
     method: "get",
-    url: `https://permissions.shareyourpaper.org/doi/${DOI}`,
+    url: `https://api.openaccessbutton.org/permissions/${DOI}`,
     headers: {},
   };
 
   return new Promise(function (resolve, reject) {
     axios(config)
       .then(async function (response) {
-        if (
-          response?.data?.authoritative_permission?.application?.can_archive
-        ) {
+        if (response?.data?.best_permission?.can_archive) {
           resolve(true);
         } else {
           resolve(false);
@@ -353,14 +352,14 @@ function writeEmailCSV(emails) {
   //     uploadLink: "link",
   //     email: "email",
   //   },
-  // {
-  //   fName: "fName",
-  //   lName: "lName",
-  //   articleTitle: "title",
-  //   DOI: "123",
-  //   uploadLink: "link",
-  //   email: "email",
-  // },
+  //   {
+  //     fName: "fName",
+  //     lName: "lName",
+  //     articleTitle: "title",
+  //     DOI: "123",
+  //     uploadLink: "link",
+  //     email: "email",
+  //   },
   // ];
   for (email of emails) {
     csv.push(

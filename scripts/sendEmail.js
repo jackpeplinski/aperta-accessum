@@ -343,24 +343,24 @@ function writeEmailCSV() {
     // "Luiz,Capretz,test,123,www,test@.com",
     // "Jack,Pep,test1,345,http,test2@com",
   ];
-  const emails = [
-    {
-      fName: "fName",
-      lName: "lName",
-      articleTitle: "title",
-      DOI: "123",
-      uploadLink: "link",
-      email: "email",
-    },
-    {
-      fName: "fName",
-      lName: "lName",
-      articleTitle: "title, title",
-      DOI: "123",
-      uploadLink: "link",
-      email: "email",
-    },
-  ];
+  // const emails = [
+  //   {
+  //     fName: "fName",
+  //     lName: "lName",
+  //     articleTitle: "title",
+  //     DOI: "123",
+  //     uploadLink: "link",
+  //     email: "email",
+  //   },
+  //   {
+  //     fName: "fName",
+  //     lName: "lName",
+  //     articleTitle: "title, title",
+  //     DOI: "123",
+  //     uploadLink: "link",
+  //     email: "email",
+  //   },
+  // ];
   for (email of emails) {
     csv.push(
       `${email.fName},${email.lName},"${email.articleTitle}",${email.DOI},${email.uploadLink},${email.email}`
@@ -391,5 +391,4 @@ function writeOAJSON(alreadyOpenAccess) {
 const institution = ""; // using AND or OR complicates this so need to add directly
 const scrapeURL = "https://www.eng.uwo.ca/electrical/people/faculty/index.html";
 const uploadBaseURL = "https://aperta-accessum.netlify.app/";
-// start(scrapeURL, institution, uploadBaseURL);
-writeEmailCSV()
+start(scrapeURL, institution, uploadBaseURL);

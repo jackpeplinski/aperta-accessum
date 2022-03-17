@@ -337,7 +337,7 @@ function getUploadLink(uploadBaseURL, DOI, title) {
   return new URL(uploadBaseURL.concat(`?doi=${DOI}&title=${title}`))?.href;
 }
 
-function writeEmailCSV() {
+function writeEmailCSV(emails) {
   const csv = [
     "fName,lName,articleTitle,DOI,uploadLink,email",
     // "Luiz,Capretz,test,123,www,test@.com",
@@ -355,7 +355,7 @@ function writeEmailCSV() {
   //   {
   //     fName: "fName",
   //     lName: "lName",
-  //     articleTitle: "title, title",
+  //     articleTitle: "Foreign Languages and Sustainability: Addressing the Connections, Communities, and Comparisons Standards in Higher Education",
   //     DOI: "123",
   //     uploadLink: "link",
   //     email: "email",
@@ -363,7 +363,7 @@ function writeEmailCSV() {
   // ];
   for (email of emails) {
     csv.push(
-      `${email.fName},${email.lName},"${email.articleTitle}",${email.DOI},${email.uploadLink},${email.email}`
+      `${email.fName},${email.lName},"${email.articleTitle}","${email.DOI}","${email.uploadLink}",${email.email}`
     );
   }
 
@@ -392,3 +392,4 @@ const institution = ""; // using AND or OR complicates this so need to add direc
 const scrapeURL = "https://www.eng.uwo.ca/electrical/people/faculty/index.html";
 const uploadBaseURL = "https://aperta-accessum.netlify.app/";
 start(scrapeURL, institution, uploadBaseURL);
+// writeEmailCSV()

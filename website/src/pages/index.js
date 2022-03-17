@@ -36,12 +36,25 @@ const IndexPage = ({ location }) => {
   return (
     <ThemeProvider theme={theme}>
       <Wrapper>
-        <h2 style={{ fontWeight: "normal" }}>
-          Confirm the title and DOI of the article you are uploading is:
-        </h2>
-        <Confirmation />
-        <h3>Please upload a PDF of your article and select the closest category.</h3>
-        <Dropzone DOI={DOI} articleTitle={articleTitle} />
+        {DOI && articleTitle ? (
+          <>
+            <h2 style={{ fontWeight: "normal" }}>
+              Confirm the title and DOI of the article you are uploading is:
+            </h2>
+            <Confirmation />
+            <h3>
+              Please upload a PDF of your article and select the closest
+              category.
+            </h3>
+            <Dropzone DOI={DOI} articleTitle={articleTitle} />{" "}
+          </>
+        ) : (
+          <>
+            <h2 style={{ fontWeight: "normal" }}>
+              Please use a URL with the DOI and upload article's full title.
+            </h2>
+          </>
+        )}
       </Wrapper>
     </ThemeProvider>
   );

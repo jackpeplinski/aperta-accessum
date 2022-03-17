@@ -4,7 +4,7 @@ import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import { FiUpload } from "react-icons/fi";
 import { Button } from "@mui/material";
-const env = require("../config.env");
+const env = require("../../../config.env");
 var Dropbox = require("dropbox");
 
 const Dropzone = (props) => {

@@ -38,15 +38,7 @@ async function start(scrapeURL, institution, uploadBaseURL) {
         ORCIDIDsCount += ORCIDIDs?.length;
         if (ORCIDIDs && ORCIDIDs?.length != 0) {
           for (ORCIDID of ORCIDIDs) {
-            console.log(ORCIDID);
-            console.log(`🔎 Searching for DOIs of ORCHIDID: ${ORCIDID}...`);
-            const DOIs = await getDOIs(ORCIDID);
-            DOIsCount += DOIs?.length;
-            if (DOIs && DOIs?.length != 0) {
-              for (DOI of DOIs) {
-                await forDOI(DOI);
-              }
-            }
+            forORCIDID(ORCIDID);
           }
         } else {
           console.log(
@@ -67,6 +59,20 @@ async function start(scrapeURL, institution, uploadBaseURL) {
     console.log(error?.message);
   } finally {
     console.timeEnd();
+  }
+}
+
+async function forORCIDID(ORCIDID) {
+  console.log(ORCIDID);
+  console.log(`🔎 Searching for DOIs of ORCHIDID: ${ORCIDID}...`);
+  const DOIs = await getDOIs(ORCIDID);
+  if (typeof DOIsCount == undefined) {
+    DOIsCount += DOIs?.length;
+  }
+  if (DOIs && DOIs?.length != 0) {
+    for (DOI of DOIs) {
+      await forDOI(DOI);
+    }
   }
 }
 

@@ -48,7 +48,7 @@ function getFileNames() {
 }
 
 function changeNameToDOI(name) {
-  var DOI = name.replace(/:/g, "/").slice(0,-4);
+  var DOI = name.replace(/:/g, "/").slice(0, -4);
 
   return DOI;
 }
@@ -71,7 +71,7 @@ async function createXML(names) {
     xw.startElement("document");
 
     xw.writeElement("title", metadata.title[0]);
-    
+
     const dateParts = metadata.created["date-parts"][0];
     for (var j = 1; j < dateParts.length; j++) {
       if (dateParts[j].toString().length == 1) {
@@ -88,6 +88,7 @@ async function createXML(names) {
 
     xw.writeElement("embargo", "FALSE");
 
+    xw.startElement("authors");
     const authorsArr = metadata.author;
     for (var j = 0; j < authorsArr.length; j++) {
       xw.startElement("author");
@@ -95,6 +96,31 @@ async function createXML(names) {
       xw.writeElement("fname", authorsArr[j].given);
       xw.endElement();
     }
+    xw.endElement();
+
+    const fields = [
+      { name: "doi", value: DOI },
+      { name: "volnum", value: metadata?.volume },
+      {
+        name: "source_publication",
+        value: metadata?.["container-title"].toString(),
+      },
+      { name: "keywords", value: metadata?.subject.toString() },
+    ];
+    xw.startElement("fields");
+    for (field of fields) {
+      xw.startElement("field");
+
+      xw.writeAttribute("type", "string");
+      xw.writeAttribute("name", field.name);
+
+      xw.writeElement("value", field.value);
+
+      xw.endElement();
+    }
+    
+    xw.endElement();
+
     xw.endElement();
   }
 

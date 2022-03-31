@@ -98,6 +98,8 @@ async function createXML(names) {
     }
     xw.endElement();
 
+    //metadata.page has weird value that's not the same as in postman
+    const pageSeperator = metadata.page.indexOf("-");
     const fields = [
       { name: "doi", value: DOI },
       { name: "volnum", value: metadata?.volume },
@@ -106,6 +108,8 @@ async function createXML(names) {
         value: metadata?.["container-title"].toString(),
       },
       { name: "keywords", value: metadata?.subject.toString() },
+      { name: "fpage", value: metadata.page.substring(0, pageSeperator) },
+      { name: "lpage", value: metadata.page.substring(pageSeperator + 1) },
     ];
     xw.startElement("fields");
     for (field of fields) {
@@ -118,7 +122,7 @@ async function createXML(names) {
 
       xw.endElement();
     }
-    
+
     xw.endElement();
 
     xw.endElement();

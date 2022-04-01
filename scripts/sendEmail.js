@@ -51,7 +51,7 @@ async function start(scrapeURL, institution, uploadBaseURL) {
       console.log("📈 Run Log");
       console.log(`${people.length} people`);
       console.log(`${ORCIDIDsCount} ORCIDIDs`);
-      console.log(`${DOIsCount} DOIs`);
+      console.log(`${DOIsCount} Identifiers`);
       console.log(`${alreadyOpenAccess.length} DOIs already open access.`);
       console.log(`${emails.length} DOIs ready for email.`);
     }

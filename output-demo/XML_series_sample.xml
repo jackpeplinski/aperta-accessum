@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <documents xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	     xsi:noNamespaceSchemaLocation='http://resources.bepress.com/document-import.xsd'>
+    <document>
+
+      <title>Title of Paper Being Batch Uploaded</title>
+
+      <publication-date>2015-04-29</publication-date>
+
+     <authors>
+
+	<author xsi:type='individual'>
+	  <email>first_last_name@bepress.com</email>
+	  <lname>Last Name</lname>
+	  <fname>First Name</fname>
+	</author>
+
+	<author xsi:type='individual'>
+	  <email>first_middle_last_name@bepress.com</email>
+	  <lname>Last Name</lname>
+	  <fname>First Name</fname>
+          <mname>Middle Name</mname>
+	</author>
+
+	<author xsi:type='individual'>
+	  <email>first_middle_last_name_institution@bepress.com</email>
+	  <institution>Institution</institution>
+	  <lname>Last Name</lname>
+	  <fname>First Name</fname>
+          <mname>Middle Name</mname>
+	</author>
+
+
+	<author xsi:type='individual'>
+	  <email>first_middle_last_name_institution_suffix@bepress.com</email>
+	  <institution>Institution</institution>
+	  <lname>Last Name</lname>
+	  <fname>First Name</fname>
+          <mname>Middle Name</mname>
+	  <suffix>III</suffix>
+	</author>
+
+      </authors> 
+
+      <abstract>
+This is the abstract field; the abstract field may or may not be a required field for the series you are uploading to.  Please check with bepress Consulting Services (dc-support@bepress.com) if you are not sure.
+      </abstract>
+      
+      <comments>This is the comments field.  The comments field is used to display additional information about the paper that is not part of the abstract field.  For example, a publisher required citation may be displayed in the comments field.</comments>
+
+<fulltext-url>http://works.bepress.com/sw_guide.pdf</fulltext-url>
+
+<document-type>article</document-type>
+
+      <!-- optional data based on fields configured for this series -->
+      <fields>
+      <field type="string" name="keywords">
+        <value>Keyword 1</value>
+        <value>Key Phrase 1</value>
+        <value>Keyword 2</value>
+        <value>Key Phrase 2</value></field>
+
+		<field name='custom' type='string'><value>This is a custom field. Please check with bepress Consulting Services (dc-support@bepress.com) if you have any custom fields included on your submit form to determine the correct field names and types to use.</value></field>
+
+      </fields>
+    </document>
+
+  </documents>

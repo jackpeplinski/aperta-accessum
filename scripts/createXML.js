@@ -85,7 +85,7 @@ async function createXML(names) {
     );
 
     xw.writeElement("fulltext-url", fullTextURL);
-
+    xw.writeElement("document-type", "article")
     xw.writeElement("embargo", "FALSE");
 
     xw.startElement("authors");

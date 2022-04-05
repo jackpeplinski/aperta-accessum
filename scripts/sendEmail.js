@@ -13,27 +13,30 @@ async function start(scrapeURL, institution, uploadBaseURL) {
   console.time();
   console.log("🏁 Starting script...");
   try {
-    const people = await getEmailsAndNames(scrapeURL);
+    // const people = await getEmailsAndNames(scrapeURL);
     var ORCIDIDsCount = 0,
       DOIsCount = 0;
     // people = [
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     // ];
-    // const people = [{ email: "test", fName: "Luiz", lName: "Capretz" }];
+    const people = [{ email: "test", fName: "Joshua", lName: "Pearce" }];
     if (people) {
       for (person of people) {
         console.log(
           `🔎 Searching ORCID for ID of: ${person?.lName.toUpperCase()}, ${person?.fName.toUpperCase()}...`
         );
-        const ORCIDIDs = await getORCIDID(
-          person.fName,
-          person.lName,
-          institution
-        );
 
-        // Can add ORCIDIDs below
-        // ORCIDIDs.push("ENTER NUMBER")
+        // Comment this out
+        // const ORCIDIDs = await getORCIDID(
+        //   person.fName,
+        //   person.lName,
+        //   institution
+        // );
+
+        // Uncomment and add ORCIDIDs below
+        ORCIDIDs = [];
+        ORCIDIDs.push("0000-0001-9802-3056")
 
         ORCIDIDsCount += ORCIDIDs?.length;
         if (ORCIDIDs && ORCIDIDs?.length != 0) {

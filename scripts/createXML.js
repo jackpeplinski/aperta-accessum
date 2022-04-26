@@ -85,8 +85,9 @@ async function createXML(names) {
     );
 
     xw.writeElement("fulltext-url", fullTextURL);
-    xw.writeElement("document-type", "article")
+    xw.writeElement("document-type", "article");
     xw.writeElement("embargo", "FALSE");
+    xw.writeElement("create_openurl", "TRUE");
 
     xw.startElement("authors");
     const authorsArr = metadata.author;
@@ -106,19 +107,21 @@ async function createXML(names) {
         value: metadata?.["container-title"].toString(),
       },
       { name: "keywords", value: metadata?.subject.toString() },
+      { name: "create_openurl", value: "TRUE", type: "boolean" },
+      { name: "embargo_date", value: "FALSE", type: "date" },
     ];
     xw.startElement("fields");
     for (field of fields) {
       xw.startElement("field");
 
-      xw.writeAttribute("type", "string");
+      xw.writeAttribute("type", field.type ? field.type : "string");
       xw.writeAttribute("name", field.name);
 
       xw.writeElement("value", field.value);
 
       xw.endElement();
     }
-    
+
     xw.endElement();
 
     xw.endElement();

@@ -13,30 +13,30 @@ async function start(scrapeURL, institution, uploadBaseURL) {
   console.time();
   console.log("🏁 Starting script...");
   try {
-    // const people = await getEmailsAndNames(scrapeURL);
     var ORCIDIDsCount = 0,
       DOIsCount = 0;
+    const people = await getPeople(scrapeURL);
     // people = [
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     // ];
-    const people = [{ email: "test", fName: "Joshua", lName: "Pearce" }];
+    // const people = [{ email: "test", fName: "Joshua", lName: "Pearce" }];
     if (people) {
       for (person of people) {
         console.log(
           `🔎 Searching ORCID for ID of: ${person?.lName.toUpperCase()}, ${person?.fName.toUpperCase()}...`
         );
 
-        // Comment this out
-        // const ORCIDIDs = await getORCIDID(
-        //   person.fName,
-        //   person.lName,
-        //   institution
-        // );
+        // Get ORCIDIDs 
+        const ORCIDIDs = await getORCIDID(
+          person.fName,
+          person.lName,
+          institution
+        );
 
-        // Uncomment and add ORCIDIDs below
-        ORCIDIDs = [];
-        ORCIDIDs.push("0000-0001-9802-3056")
+        // To manually search ORCIDIDs, comment out getORCIDID and uncomment the following two lines.
+        // ORCIDIDs = [];
+        // ORCIDIDs.push("0000-0001-9802-3056");
 
         ORCIDIDsCount += ORCIDIDs?.length;
         if (ORCIDIDs && ORCIDIDs?.length != 0) {
@@ -85,6 +85,7 @@ async function forDOI(DOI) {
     getDuplicateDOIStatus(DOI),
     getTitle(DOI),
   ]);
+  
   if (!(statuses.includes(false) || statuses.includes(undefined))) {
     const title = statuses[3];
     const duplicateTitleStatus = await getDuplicateTitleStatus(title);
@@ -107,7 +108,7 @@ async function forDOI(DOI) {
   }
 }
 
-async function getEmailsAndNames(scrapeURL) {
+async function getPeople(scrapeURL) {
   return new Promise(function (resolve, reject) {
     axios
       .get(scrapeURL)

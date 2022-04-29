@@ -344,8 +344,6 @@ function getUploadLink(uploadBaseURL, DOI, title) {
 function writeEmailCSV(emails) {
   const csv = [
     "fName,lName,articleTitle,DOI,uploadLink,email",
-    // "Luiz,Capretz,test,123,www,test@.com",
-    // "Jack,Pep,test1,345,http,test2@com",
   ];
   // const emails = [
   //   {
@@ -396,4 +394,3 @@ const institution = ""; // using AND or OR complicates this so need to add direc
 const scrapeURL = "https://www.eng.uwo.ca/electrical/people/faculty/index.html";
 const uploadBaseURL = "https://aperta-accessum.netlify.app/";
 start(scrapeURL, institution, uploadBaseURL);
-// writeEmailCSV()

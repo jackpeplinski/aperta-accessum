@@ -15,28 +15,65 @@ async function start(scrapeURL, institution, uploadBaseURL) {
   try {
     var ORCIDIDsCount = 0,
       DOIsCount = 0;
-    const people = await getPeople(scrapeURL);
+    // const people = await getPeople(scrapeURL);
     // people = [
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     // ];
-    // const people = [{ email: "test", fName: "Joshua", lName: "Pearce" }];
+    const people = [
+      { email: "test", fName: "Jasmin", lName: "Bhawra" },
+      { email: "test", fName: "Shauna", lName: "Burke" },
+      { email: "test", fName: "Jennifer", lName: "Irwin" },
+      { email: "test", fName: "Andrew", lName: "Johnson" },
+      { email: "test", fName: "Tarun", lName: "Katapally" },
+      { email: "test", fName: "Ken", lName: "Kirkwood" },
+      { email: "test", fName: "Anita", lName: "Kothari" },
+      { email: "test", fName: "Tara", lName: "Mantler" },
+      { email: "test", fName: "Elysee", lName: "Nouvet" },
+      { email: "test", fName: "Treena", lName: "Orchard" },
+      { email: "test", fName: "Jessica", lName: "Polzer" },
+      { email: "test", fName: "Marie", lName: "Savundranayagam" },
+      { email: "test", fName: "Jacob", lName: "Shelley" },
+      { email: "test", fName: "Shannon", lName: "Sibbald" },
+      { email: "test", fName: "Carla", lName: "Silva" },
+      { email: "test", fName: "Maxwell", lName: "Smith" },
+      { email: "test", fName: "Marnie", lName: "Wedlake" },
+      { email: "test", fName: "Aleksandra", lName: "Zecevic" },
+    ];
     if (people) {
       for (person of people) {
         console.log(
           `🔎 Searching ORCID for ID of: ${person?.lName.toUpperCase()}, ${person?.fName.toUpperCase()}...`
         );
 
-        // Get ORCIDIDs 
-        const ORCIDIDs = await getORCIDID(
-          person.fName,
-          person.lName,
-          institution
-        );
+        // Get ORCIDIDs
+        // const ORCIDIDs = await getORCIDID(
+        //   person.fName,
+        //   person.lName,
+        //   institution
+        // );
 
         // To manually search ORCIDIDs, comment out getORCIDID and uncomment the following two lines.
-        // ORCIDIDs = [];
-        // ORCIDIDs.push("0000-0001-9802-3056");
+        ORCIDIDs = [
+          "0000-0001-9926-8442",
+          "0000-0003-2749-1631",
+          "",
+          "",
+          "0000-0001-5765-1435",
+          "",
+          "0000-0003-1533-6976",
+          "0000-0003-0348-7726",
+          "0000-0002-1607-3453",
+          "0000-0002-9660-5869",
+          "0000-0002-5785-1776",
+          "0000-0002-3911-1854",
+          "0000-0003-2432-9874",
+          "0000-0002-4328-6489",
+          "",
+          "",
+          "0000-0002-6834-3822",
+          "0000-0002-5116-0464",
+        ];
 
         ORCIDIDsCount += ORCIDIDs?.length;
         if (ORCIDIDs && ORCIDIDs?.length != 0) {
@@ -85,7 +122,7 @@ async function forDOI(DOI) {
     getDuplicateDOIStatus(DOI),
     getTitle(DOI),
   ]);
-  
+
   if (!(statuses.includes(false) || statuses.includes(undefined))) {
     const title = statuses[3];
     const duplicateTitleStatus = await getDuplicateTitleStatus(title);
@@ -342,9 +379,7 @@ function getUploadLink(uploadBaseURL, DOI, title) {
 }
 
 function writeEmailCSV(emails) {
-  const csv = [
-    "fName,lName,articleTitle,DOI,uploadLink,email",
-  ];
+  const csv = ["fName,lName,articleTitle,DOI,uploadLink,email"];
   // const emails = [
   //   {
   //     fName: "fName",

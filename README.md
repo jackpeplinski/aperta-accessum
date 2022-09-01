@@ -6,7 +6,7 @@ Read the paper here (coming soon).
 ### Prerequisites
  - Basic understanding of UNIX commands.
  - Git, Node.js LTS, and a code editor (e.g., VSCode)  installed.
- - An understanding of API keys, folders,  
+ - An understanding of how APIs work. 
 
  ### Steps
  1. Clone this repository to your device.
@@ -20,3 +20,4 @@ module.exports = {
 ```
 4. Navigate into the `aperta-accessum` directory and then run `cd scripts`, `npm i`.
 5. Configure `sendEmail.js` using the file's comments to meet your needs (e.g., what data you want to scrape) and then run `node sendEmail.js` to run the file.
+6. Deploy the website. You could use Netlify. Run `npm build` in the `website` folder, and then upload the build folder to Netlify.

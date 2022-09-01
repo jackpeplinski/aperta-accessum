@@ -22,4 +22,4 @@ _Note: bepress keys need to be obtained by emailing them; Dropbox keys need to b
 
 4. Navigate into the `aperta-accessum` directory and then run `cd scripts`, `npm i`.
 5. Configure `sendEmail.js` using the file's comments to meet your needs (e.g., what data you want to scrape) and then run `node sendEmail.js` to run the file.
-6. Deploy the website. Netlify can be used, among many hosting options. Run `npm build` in the `website` folder, and then upload the build folder to Netlify.
+6. Deploy the website. [Netlify can be used](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/), among many hosting options. Run `npm build` in the `website` folder, and then upload the build folder to Netlify.

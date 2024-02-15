@@ -15,19 +15,19 @@ async function start(scrapeURL, institution, uploadBaseURL) {
   try {
     var ORCIDIDsCount = 0,
       DOIsCount = 0;
-    const people = await getPeople(scrapeURL);
+    // const people = await getPeople(scrapeURL);
     // people = [
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     //   { email: "jack@test.com", fName: "jack", lName: "pepl" },
     // ];
-    // const people = [{ email: "test", fName: "Joshua", lName: "Pearce" }];
+    const people = [{ email: "test", fName: "Joshua", lName: "Pearce" }];
     if (people) {
       for (person of people) {
         console.log(
           `🔎 Searching ORCID for ID of: ${person?.lName.toUpperCase()}, ${person?.fName.toUpperCase()}...`
         );
 
-        // Get ORCIDIDs 
+        // Get ORCIDIDs
         const ORCIDIDs = await getORCIDID(
           person.fName,
           person.lName,
@@ -85,7 +85,7 @@ async function forDOI(DOI) {
     getDuplicateDOIStatus(DOI),
     getTitle(DOI),
   ]);
-  
+
   if (!(statuses.includes(false) || statuses.includes(undefined))) {
     const title = statuses[3];
     const duplicateTitleStatus = await getDuplicateTitleStatus(title);
@@ -142,22 +142,18 @@ async function getPeople(scrapeURL) {
 async function getORCIDID(fName, lName, institution) {
   var config = {
     method: "get",
-    url: `https://pub.orcid.org/v3.0/search/?q=family-name:${lName}+AND+given-names:${fName}+AND+current-institution-affiliation-name:("Western University" OR "University of Western Ontario")`,
+    url: `https://pub.orcid.org/v3.0/search/?q=family-name:Pearce+AND+given-names:Joshua`,
+    // url: `https://pub.orcid.org/v3.0/search/?q=family-name:${lName}+AND+given-names:${fName}+AND+current-institution-affiliation-name:("Western University" OR "University of Western Ontario")`,
     headers: {},
   };
+  console.log(config?.url);
 
   return new Promise(function (resolve, reject) {
     axios(config)
       .then(function (response) {
-        const parsedResponse = parser?.parseFromString(
-          response?.data,
-          "text/xml"
-        );
-        const pathTags = parsedResponse?.getElementsByTagName("common:path");
-
         const ORCIDIDs = [];
-        for (const tag of pathTags) {
-          const ORCIDID = tag?.childNodes[0]?.data;
+        for (const ORCIDIDObj of response?.data?.result) {
+          const ORCIDID = ORCIDIDObj["orcid-identifier"]?.path;
           ORCIDIDs.push(ORCIDID);
         }
         resolve(ORCIDIDs);
@@ -342,9 +338,7 @@ function getUploadLink(uploadBaseURL, DOI, title) {
 }
 
 function writeEmailCSV(emails) {
-  const csv = [
-    "fName,lName,articleTitle,DOI,uploadLink,email",
-  ];
+  const csv = ["fName,lName,articleTitle,DOI,uploadLink,email"];
   // const emails = [
   //   {
   //     fName: "fName",

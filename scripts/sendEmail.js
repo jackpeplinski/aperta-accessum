@@ -142,8 +142,8 @@ async function getPeople(scrapeURL) {
 async function getORCIDID(fName, lName, institution) {
   var config = {
     method: "get",
-    url: `https://pub.orcid.org/v3.0/search/?q=family-name:Pearce+AND+given-names:Joshua`,
-    // url: `https://pub.orcid.org/v3.0/search/?q=family-name:${lName}+AND+given-names:${fName}+AND+current-institution-affiliation-name:("Western University" OR "University of Western Ontario")`,
+    // url: `https://pub.orcid.org/v3.0/search/?q=family-name:Pearce+AND+given-names:Joshua`,
+    url: `https://pub.orcid.org/v3.0/search/?q=family-name:${lName}+AND+given-names:${fName}+AND+current-institution-affiliation-name:("Western University" OR "University of Western Ontario")`,
     headers: {},
   };
   console.log(config?.url);
@@ -175,22 +175,15 @@ async function getDOIs(ORCIDID) {
   return new Promise(function (resolve, reject) {
     axios(config)
       .then(function (response) {
-        const parsedResponse = parser.parseFromString(
-          response.data,
-          "text/xml"
-        );
-        const externalIdValueTags = parsedResponse.getElementsByTagName(
-          "common:external-id-value"
-        );
-        const DOIs = new Set(); // there are two tags with the same info, so a set is needed to only add new DOIs
-        for (var tag of externalIdValueTags) {
-          var DOI = tag?.childNodes[0]?.data;
-          if (!DOIs.has(DOI)) {
-            DOIs.add(DOI);
-            console.log(DOI);
+        const DOIs = [];
+        for (const work of response?.data?.group) {
+          for (const externalID of work["external-ids"]["external-id"]) {
+            if (externalID["external-id-type"] == "doi") {
+              DOIs.push(externalID["external-id-value"]);
+            }
           }
         }
-        resolve(Array.from(DOIs));
+        resolve(DOIs);
       })
       .catch(function (error) {
         console.log(error?.response?.data?.message || error?.message);

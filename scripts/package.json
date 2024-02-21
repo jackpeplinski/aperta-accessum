@@ -14,6 +14,7 @@
     "browserify-fs": "^1.0.0",
     "cheerio": "^1.0.0-rc.10",
     "jsdom": "^18.0.0",
+    "qs": "^6.11.2",
     "xml-writer": "^1.7.0"
   }
 }

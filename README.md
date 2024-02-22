@@ -20,7 +20,7 @@ Read the paper [here](https://www.iastatedigitalpress.com/jlsc/article/id/14421/
 ```
 module.exports = {
 	BEPRESS:  "YOUR-BEPRESS-API-KEY",
-	DROPBOX:  "YOUR-DROPBOX-API-KEY"
+	DROPBOX:  "YOUR-DROPBOX-REFRESH-KEY"
 };
 ```
 

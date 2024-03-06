@@ -257,12 +257,18 @@ function isTitleArchivedAlready(title) {
           // if there is NO result with the title, the article is NOT in th db
           resolve(false);
         } else {
-          resolve(true);
+          for (const result of response?.data?.results) {
+            if (result?.title.replace(/[^a-zA-Z ]/g, "") == title) {
+              // if there is a result with the title, the article IS in the db
+              resolve(true);
+            }
+          }
+          resolve(false);
         }
       })
       .catch(function (error) {
         console.log(error?.response?.data?.message || error?.message);
-        resolve(true);
+        resolve(false);
       });
   });
 }

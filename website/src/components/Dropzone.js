@@ -38,6 +38,7 @@ const Dropzone = (props) => {
       "You're submission is being processed! After closing this alert, please do not refresh or click submit again—wait for a new page to load."
     );
 
+    // @todo: this needs to be updated to use the new Dropbox refresh keys
     // from https://github.com/dropbox/dropbox-sdk-js/blob/main/examples/javascript/upload/index.html
     var dbx = new Dropbox.Dropbox({
       accessToken: env.DROPBOX,

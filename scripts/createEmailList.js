@@ -79,32 +79,53 @@ async function forDOI(DOI) {
   console.log(`🔎 Checking status of ${DOI} ...`);
 
   // FYI, using Promise.all versus checking for each status did not make a material difference
-  const statuses = await Promise.all([
-    getPermissionsStatus(DOI),
-    getOpenAccessStatus(DOI),
-    getDuplicateDOIStatus(DOI),
+  const [
+    isArchivableStatus,
+    hasPDFAlreadyStatus,
+    isDOIArchivedAlreadyStatus,
+    titleStatus,
+  ] = await Promise.all([
+    isArchivable(DOI),
+    hasPDFAlready(DOI),
+    isDOIArchivedAlready(DOI),
     getTitle(DOI),
   ]);
 
-  if (!(statuses.includes(false) || statuses.includes(undefined))) {
-    const title = statuses[3];
-    const duplicateTitleStatus = await getDuplicateTitleStatus(title);
-    if (duplicateTitleStatus) {
-      const uploadLink = getUploadLink(uploadBaseURL, DOI, title);
-      console.log("  📧 Added to email list.");
-      emails.push({
-        fName: person.fName,
-        lName: person.lName,
-        articleTitle: title,
-        DOI: DOI,
-        uploadLink: uploadLink,
-        email: person.email,
-      });
-    } else {
-      console.log("  🟧 Not eligible to archive.");
-    }
+  if (!isArchivableStatus) {
+    console.log("  🟧 Cannot archive. Not archivable");
+    return;
+  }
+
+  if (hasPDFAlreadyStatus) {
+    console.log("  📑 Will be added to already open access list.");
+    return;
+  }
+
+  if (isDOIArchivedAlreadyStatus) {
+    console.log("  🟧 Cannot archive. DOI already in bepress.");
+    return;
+  }
+
+  if (!titleStatus) {
+    console.log("  🟧 Cannot archive. No title found.");
+    return;
+  }
+
+  const title = titleStatus;
+  const isTitleArchivedAlreadyStatus = await isTitleArchivedAlready(title);
+  if (!isTitleArchivedAlreadyStatus) {
+    const uploadLink = getUploadLink(uploadBaseURL, DOI, title);
+    console.log("  📧 Added to email list.");
+    emails.push({
+      fName: person.fName,
+      lName: person.lName,
+      articleTitle: title,
+      DOI: DOI,
+      uploadLink: uploadLink,
+      email: person.email,
+    });
   } else {
-    console.log("  🟧 Not eligible to archive.");
+    console.log("  🟧 Cannot archive. Title already archived.");
   }
 }
 
@@ -192,7 +213,7 @@ async function getDOIs(ORCIDID) {
   });
 }
 
-async function getDuplicateDOIStatus(DOI) {
+async function isDOIArchivedAlready(DOI) {
   var config = {
     method: "get",
     url: `https://content-out.bepress.com/v2/ir.lib.uwo.ca/query?doi=${DOI}`,
@@ -219,7 +240,7 @@ async function getDuplicateDOIStatus(DOI) {
   });
 }
 
-function getDuplicateTitleStatus(title) {
+function isTitleArchivedAlready(title) {
   var title = title?.replace(/[^a-zA-Z ]/g, ""); // need to remove special characters for bepress... ugh
   var config = {
     method: "get",
@@ -247,7 +268,12 @@ function getDuplicateTitleStatus(title) {
 }
 
 // getPermissionsStatus("10.1109/MITP.2020.3031862")
-function getPermissionsStatus(DOI) {
+/**
+ *
+ * @param {*} DOI
+ * @returns true if the publication can be archived
+ */
+function isArchivable(DOI) {
   var config = {
     method: "get",
     url: `https://api.openaccessbutton.org/permissions/${DOI}`,
@@ -272,7 +298,7 @@ function getPermissionsStatus(DOI) {
 
 const alreadyOpenAccess = [];
 // @todo could refactor this to reduce scope
-function getOpenAccessStatus(DOI) {
+function hasPDFAlready(DOI) {
   const unpaywallEmail = "jpeplin2@uwo.ca"; // required for unpaywall @todo move to more obvious place?
 
   var config = {
@@ -288,15 +314,19 @@ function getOpenAccessStatus(DOI) {
         const resp = response?.data;
         if (resp?.is_oa) {
           if (resp?.best_oa_location?.url_for_pdf) {
+            // if the publication is open access and has a pdf
             const publication = {
               DOI: DOI,
               openAccessURL: resp?.best_oa_location?.url_for_pdf,
             };
             alreadyOpenAccess.push(publication);
+            resolve(true);
           }
+          // if the publication is open access (may not have a pdf)
           resolve(false);
         } else {
-          resolve(true);
+          // if the publication is not open access
+          resolve(false);
         }
       })
       .catch(function (error) {
@@ -381,3 +411,4 @@ const institution = ""; // using AND or OR complicates this so need to add direc
 const scrapeURL = "https://www.eng.uwo.ca/electrical/people/faculty/index.html";
 const uploadBaseURL = "https://aperta-accessum.netlify.app/";
 start(scrapeURL, institution, uploadBaseURL);
+// forDOI("10.21083/partnership.v4i1.334");
